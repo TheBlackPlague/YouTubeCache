@@ -24,7 +24,7 @@ $configuration = $fileReader->generateConfiguration();
 foreach ($configuration->requestList as $request) {
     $video = $request->video;
     $endpoint = $request->endpoint;
-    $lowestLatency = PHP_INT_MAX;
+    $lowestLatency = $endpoint->dataCenterLatency;
     $selectedCache = null;
 
     /**
@@ -34,6 +34,7 @@ foreach ($configuration->requestList as $request) {
     foreach ($endpoint->connectedCaches as $id => $connectedCache) {
         $latency = $endpoint->connectedCachesLatency[$id];
         if ($latency < $lowestLatency && $connectedCache->canStore($video)) {
+            $lowestLatency = $latency;
             $selectedCache = $connectedCache;
         }
     }
