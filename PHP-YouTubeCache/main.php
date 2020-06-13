@@ -17,6 +17,7 @@ include 'D:/GoogleCode/YouTubeCache/PHP-YouTubeCache/source/FileWriter.php';
 $fileReader = new FileReader('D:/GoogleCode/YouTubeCache/PHP-YouTubeCache/data/data.in');
 
 $configuration = $fileReader->generateConfiguration();
+$configuration->sortData();
 
 // solve the problem
 
