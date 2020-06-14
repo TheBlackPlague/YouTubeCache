@@ -18,3 +18,9 @@ Scores for PHP-YouTubeCache:
 
 Total score (including sample set): `1,278,382`.
 Total score (excluding sample set): `715,882`.
+
+Ways to improve this? (Ways I think this algorithm can be improved)
+- Back Propagation: Currently, once we make a decision, we don't look back. This
+can be bad for future decisions but is fastest way of going about it. Back Propagation
+while slowing the algorithm down significantly, might lead to a higher score. Definitely
+something one should explore.
