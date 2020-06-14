@@ -26,6 +26,10 @@ class Cache
 
     public function store(Video $video): void
     {
+        if (in_array($video, $this->videoStorage, true)) {
+            return;
+        }
+
         $this->currentSize += $video->size;
         $this->videoStorage[] = $video;
     }
