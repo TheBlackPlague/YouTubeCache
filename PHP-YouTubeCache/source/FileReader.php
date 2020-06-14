@@ -19,13 +19,26 @@ class FileReader
 
     public function readLines(): void
     {
-        $content = file_get_contents($this->path);
+        // $content = file_get_contents($this->path);
 
-        $this->lines = explode(PHP_EOL, $content);
+        // $this->lines = explode(PHP_EOL, $content);
+
+        // var_dump($this->lines);
+
+        $file = fopen($this->path, 'rb');
+        $this->lines = [];
+
+        while (!feof($file)) {
+            $this->lines[] = fgets($file);
+        }
+
+        fclose($file);
     }
 
     public function generateConfiguration(): Configuration
     {
+        echo 'Generating Configuration' . PHP_EOL;
+
         $configuration = explode(' ', $this->lines[$this->lineToRead]);
         ++$this->lineToRead;
 
@@ -37,14 +50,24 @@ class FileReader
             (int)$configuration[4]
         );
 
+        echo 'Configuration Generated' . PHP_EOL;
+
         // cache
+        echo 'Generating Caches' . PHP_EOL;
         for ($i = 0; $i < $configuration->cacheCount; $i++) {
             $configuration->cacheList[$i] = new Cache($i, $configuration->cacheSize);
         }
+        echo 'Cache Generated' . PHP_EOL;
 
+        echo 'Generating videos...' . PHP_EOL;
         $this->generateVideos($configuration);
+        echo 'Videos Generated' . PHP_EOL;
+        echo 'Generating Endpoints' . PHP_EOL;
         $this->generateEndpoints($configuration);
+        echo 'Endpoints Generated' . PHP_EOL;
+        echo 'Generating Requests' . PHP_EOL;
         $this->generateRequests($configuration);
+        echo 'Requests Generated' . PHP_EOL;
 
         return $configuration;
     }
@@ -56,6 +79,7 @@ class FileReader
         if (count($videoSizes) === $configuration->videoCount) {
             for ($i = 0; $i < $configuration->videoCount; $i++) {
                 $configuration->videoList[$i] = new Video($i, (int)$videoSizes[$i]);
+                echo "\t" . 'Video #' . $i . ' Generated' . PHP_EOL;
             }
         }
     }

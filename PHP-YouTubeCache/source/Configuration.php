@@ -37,6 +37,9 @@ class Configuration
             $selectedRequest = null;
             $selectedPointer = 0;
 
+            $formattingPercentage = (count($requestList) / $requestListCount) * 100;
+            echo 'Data formatting completed: ' . $formattingPercentage . '%' . PHP_EOL;
+
             /** @var Request $request */
             foreach ($this->requestList as $pointer => $request) {
                 if ($request->count > $highestCount) {
