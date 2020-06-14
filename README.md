@@ -19,6 +19,10 @@ Scores for PHP-YouTubeCache:
 Total score (including sample set): `1,278,382`.
 Total score (excluding sample set): `715,882`.
 
+If you google search, you may find that some algorithms are apparently scoring higher. Maybe not all, but
+most that I have found have (like the example Google submission file), included videos in the caches that 
+weren't even requested for viewership.
+
 Ways to improve this? (Ways I think this algorithm can be improved)
 - Back Propagation: Currently, once we make a decision, we don't look back. This
 can be bad for future decisions but is fastest way of going about it. Back Propagation
