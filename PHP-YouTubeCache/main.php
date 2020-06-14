@@ -16,7 +16,7 @@ $time = microtime(true);
 
 // format data into easy understandable way
 
-$dataset = '';
+$dataset = 'videos_worth_spreading';
 
 $dt = microtime(true);
 $fileReader = new FileReader('D:/GoogleCode/YouTubeCache/PHP-YouTubeCache/data/' . $dataset . '.in');
@@ -32,12 +32,17 @@ echo 'Dataset Formatted' . PHP_EOL;
 
 echo 'Solving Problem' . PHP_EOL;
 
+$scoreList = [];
+$totalNumberOfRequest = 0;
+
 $pt = microtime(true);
 /** @var Request $request */
-foreach ($configuration->requestList as $request) {
+foreach ($configuration->requestList as $pointer => $request) {
+    $totalNumberOfRequest += $request->count;
     $video = $request->video;
     $endpoint = $request->endpoint;
     $lowestLatency = $endpoint->dataCenterLatency;
+    $selectedCacheId = -1;
     $selectedCache = null;
 
     /**
@@ -48,17 +53,34 @@ foreach ($configuration->requestList as $request) {
         $latency = $endpoint->connectedCachesLatency[$id];
         if ($latency < $lowestLatency && $connectedCache->canStore($video)) {
             $lowestLatency = $latency;
+            $selectedCacheId = $id;
             $selectedCache = $connectedCache;
         }
     }
 
     if ($selectedCache instanceof Cache) {
         $selectedCache->store($video);
+        $scoreList[$pointer] =
+            ($endpoint->dataCenterLatency - $endpoint->connectedCachesLatency[$selectedCacheId]) * $request->count;
+    } else {
+        $scoreList[$pointer] = 0;
     }
 }
 echo 'Total problem solving time: ' . (microtime(true) - $pt) . 's' . PHP_EOL;
 
 echo 'Problem solved' . PHP_EOL;
+
+echo 'Calculating Score...' . PHP_EOL;
+
+$scoreSum = 0;
+foreach ($scoreList as $individualRequestDescriptionScore) {
+    $scoreSum += $individualRequestDescriptionScore;
+}
+
+$score = ($scoreSum * 1000) / $totalNumberOfRequest;
+$score = floor($score);
+
+echo 'Calculated Score for dataset (' . $dataset . ') is: ' . (int)$score . PHP_EOL;
 
 // output data in Google's submission format
 
